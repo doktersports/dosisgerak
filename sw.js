@@ -1,6 +1,6 @@
 // Service worker DosisGerak: semua aset disimpan saat pemasangan, lalu dilayani dari cache.
 // Naikkan VERSI setiap rilis agar HP mengambil berkas baru.
-const VERSI = 'dosisgerak-1.0.0-pratinjau.1';
+const VERSI = 'dosisgerak-1.0.0-pratinjau.2';
 const ASET = [
   './',
   './index.html',

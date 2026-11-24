@@ -5,6 +5,8 @@ import { OBAT, NAMA_HARI } from './data.js';
 
 const BUKTI = 'BUKTI';
 const PAKAR = 'PAKAR';
+// Grindem 2016: risiko cedera ulang turun sampai 9 bulan. 9 × 30,4 hari ÷ 7 = 39,1 → 39 minggu.
+export const BATAS_PIVOTING = 39;
 
 export function imt(bb, tb) {
   if (!bb || !tb) return null;
@@ -83,10 +85,10 @@ export function defaultDurasi(dx, profil, pengaturan) {
   let batasMerah = null;
   if (dx === 'aclr') {
     if (profil.target === 'pivoting') {
-      rincian.push({ teks: 'Dasar: ACL-R → olahraga pivoting', nilai: 36, label: BUKTI, sumber: ['grindem2016'] });
-      batasMerah = 36;
+      rincian.push({ teks: 'Dasar: ACL-R → olahraga pivoting (9 bulan ≈ 39 minggu)', nilai: BATAS_PIVOTING, label: BUKTI, sumber: ['grindem2016'] });
+      batasMerah = BATAS_PIVOTING;
     } else {
-      rincian.push({ teks: 'Dasar: ACL-R → aktivitas non-pivoting', nilai: pengaturan.aclrDasarNonPivoting, label: PAKAR, sumber: [] });
+      rincian.push({ teks: 'Dasar: ACL-R → aktivitas non-pivoting', nilai: pengaturan.aclrDasarNonPivoting, label: PAKAR, sumber: ['vanMelick2016'] });
     }
     const nilaiImt = imt(profil.bb, profil.tb);
     if (nilaiImt && nilaiImt >= 30) {

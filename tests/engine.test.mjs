@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { zonaKarvonen, modeIntensitas, gerbangProfil, defaultDurasi, zonaDurasi, programDM2, programACLR, jedaTerpanjang, imt, kodeKasus } from '../js/engine.js';
 import { PENGATURAN_AWAL } from '../js/data.js';
+import { migrasi } from '../js/store.js';
 
 let lulus = 0;
 function uji(nama, fn) { fn(); lulus++; console.log('  ok  ' + nama); }
@@ -37,20 +38,26 @@ uji('Prosedur kartilago pada ACL-R memicu gerbang merah', () => {
   assert.ok(g.some(x => x.status === 'merah'));
 });
 
-uji('ACL-R pivoting: default 36, batas merah 36', () => {
+uji('ACL-R pivoting: default 39, batas merah 39 (9 bulan Grindem)', () => {
   const d = defaultDurasi('aclr', { target: 'pivoting', bb: 70, tb: 175, usia: 22 }, PENGATURAN_AWAL);
-  assert.equal(d.total, 36);
-  assert.equal(d.batasMerah, 36);
-  assert.equal(zonaDurasi(34, d), 'merah');
-  assert.equal(zonaDurasi(36, d), 'hijau');
+  assert.equal(d.total, 39);
+  assert.equal(d.batasMerah, 39);
+  assert.equal(zonaDurasi(38, d), 'merah');
+  assert.equal(zonaDurasi(39, d), 'hijau');
+});
+
+uji('ACL-R non-pivoting: default 39 tanpa zona merah', () => {
+  const d = defaultDurasi('aclr', { target: 'harian', bb: 70, tb: 175, usia: 22 }, PENGATURAN_AWAL);
+  assert.equal(d.total, 39);
+  assert.equal(d.batasMerah, null);
+  assert.equal(zonaDurasi(20, d), 'kuning');
 });
 
 uji('ACL-R: faktor PAKAR ikut dijumlahkan', () => {
-  const p = { ...PENGATURAN_AWAL, faktorImt30: 2, faktorUsia40: 2 };
-  const d = defaultDurasi('aclr', { target: 'pivoting', bb: 95, tb: 170, usia: 41 }, p);
-  assert.equal(d.total, 40);
-  assert.equal(zonaDurasi(38, d), 'kuning');
-  assert.equal(zonaDurasi(35, d), 'merah');
+  const d = defaultDurasi('aclr', { target: 'pivoting', bb: 95, tb: 170, usia: 41, aktivitas: 'sedenter' }, PENGATURAN_AWAL);
+  assert.equal(d.total, 45);
+  assert.equal(zonaDurasi(42, d), 'kuning');
+  assert.equal(zonaDurasi(38, d), 'merah');
 });
 
 uji('Pola hari 3–7: jeda tidak pernah lebih dari 2 hari', () => {
@@ -73,9 +80,19 @@ uji('DM2: pengguna sekretagog mendapat catatan hipoglikemia', () => {
 });
 
 uji('ACL-R: program dimulai sesudah minggu pascaoperasi saat ini', () => {
-  const prog = programACLR({}, 36, { mingguPascaop: 3 });
+  const prog = programACLR({}, 39, { mingguPascaop: 3 });
   assert.equal(prog.minggu[0].minggu, 4);
-  assert.equal(prog.minggu.at(-1).minggu, 36);
+  assert.equal(prog.minggu.at(-1).minggu, 39);
+});
+
+uji('Migrasi: bawaan lama diganti, angka buatan dokter dibiarkan', () => {
+  const lama = { versiData: 1, kasus: [], pengaturan: { aclrDasarNonPivoting: 36, faktorImt30: 0, faktorSedenter: 3, faktorUsia40: 0, dm2Durasi: 16 } };
+  const d = migrasi(lama);
+  assert.equal(d.versiData, 2);
+  assert.equal(d.pengaturan.aclrDasarNonPivoting, 39);
+  assert.equal(d.pengaturan.faktorImt30, 2);
+  assert.equal(d.pengaturan.faktorSedenter, 3);
+  assert.equal(d.pengaturan.dm2Durasi, 16);
 });
 
 uji('Kode kasus berurutan per awalan', () => {

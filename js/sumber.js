@@ -18,6 +18,7 @@ export const SUMBER = {
     jenis: 'Pedoman praktik klinis',
     status: 'terverifikasi'
   },
+  vanMelick2016: { singkat:'van Melick 2016 (KNGF)', vancouver:'van Melick N, van Cingel REH, Brooijmans F, Neeter C, van Tienen T, Hullegie W, et al. Evidence-based clinical practice update: practice guidelines for anterior cruciate ligament rehabilitation based on a systematic review and multidisciplinary consensus. Br J Sports Med. 2016;50(24):1506-15.', doi:'10.1136/bjsports-2015-095898', jenis:'Pedoman praktik klinis', status:'terverifikasi' },
   kanaley2022: {
     singkat: 'ACSM 2022 (DM2)',
     vancouver: 'Kanaley JA, Colberg SR, Corcoran MH, Malin SK, Rodriguez NR, Crespo CJ, et al. Exercise/physical activity in individuals with type 2 diabetes: a consensus statement from the American College of Sports Medicine. Med Sci Sports Exerc. 2022;54(2):353-68.',

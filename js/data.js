@@ -1,6 +1,6 @@
 // Data statis DosisGerak. Semua aturan berstatus DRAF sampai ditinjau dr. Yudha.
 
-export const VERSI = '1.0.0-pratinjau.1';
+export const VERSI = '1.0.0-pratinjau.2';
 
 // 14 regio. sisi: false = struktur garis tengah (tanpa pilihan kanan/kiri).
 export const REGIO = [
@@ -56,16 +56,21 @@ export const OBAT = [
   { id: 'lain', nama: 'Lain-lain', contoh: 'salbutamol, kortikosteroid sistemik, amitriptilin, levotiroksin', dampak: 'Takikardia, hiperglikemia, atau hipotensi ortostatik tergantung obat.', efek: {} }
 ];
 
-// Besaran PAKAR: ditetapkan dr. Yudha di Pengaturan. Nilai 0 = belum ditetapkan.
+// Besaran PAKAR: ditetapkan dr. Yudha (keputusan 24 Nov 2026). Nilai 0 = belum ditetapkan.
 export const PENGATURAN_AWAL = {
-  aclrDasarNonPivoting: 36,   // minggu; PAKAR (belum ada batas bukti untuk target non-pivoting)
-  faktorImt30: 0,             // minggu tambahan bila IMT >= 30
-  faktorSedenter: 0,          // minggu tambahan bila tidak aktif sebelum cedera
-  faktorUsia40: 0,            // minggu tambahan bila usia >= 40 tahun
+  aclrDasarNonPivoting: 39,   // minggu; PAKAR, batas bawah rehabilitasi 9-12 bulan KNGF (van Melick 2016)
+  faktorImt30: 2,             // minggu tambahan bila IMT >= 30
+  faktorSedenter: 2,          // minggu tambahan bila tidak aktif sebelum cedera
+  faktorUsia40: 2,            // minggu tambahan bila usia >= 40 tahun
   dm2Durasi: 12,              // minggu; PAKAR
   dm2HariAerobik: 5,          // hari/minggu; minimum 3 menurut ACSM 2022
   dm2VolumeAwalPersen: 50,    // % dari 150 menit pada minggu 1; PAKAR
   dm2MingguCapaiTarget: 6     // minggu saat 150 menit tercapai; PAKAR
+};
+
+// Nilai bawaan lama. Bila HP masih menyimpan angka ini persis, migrasi menggantinya dengan bawaan baru.
+export const PENGATURAN_LAMA = {
+  1: { aclrDasarNonPivoting: 36, faktorImt30: 0, faktorSedenter: 0, faktorUsia40: 0 }
 };
 
 export const NAMA_HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];

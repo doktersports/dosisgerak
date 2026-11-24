@@ -326,7 +326,7 @@ function halamanDurasi() {
       <div class="legenda-slider">${legenda}</div>
       <div id="status-durasi"></div>
       <div id="kotak-alasan" hidden><div class="isian"><label for="alasan">Alasan Klinis (Wajib)</label><textarea id="alasan" rows="3" placeholder="Contoh: pasien hanya kembali ke aktivitas harian">${esc(draf.alasanMerah)}</textarea></div></div>
-      ${batas != null ? `<p class="muted kecil">Batas bukti: laju cedera ulang turun 51% per bulan penundaan RTS hingga 9 bulan (Grindem 2016).</p>` : '<p class="muted kecil">Belum ada batas bukti untuk target ini, sehingga tidak ada zona merah.</p>'}
+      ${batas != null ? `<p class="muted kecil">Batas bukti: laju cedera ulang turun 51% per bulan penundaan RTS hingga 9 bulan, setara ±39 minggu (Grindem 2016).</p>` : '<p class="muted kecil">Belum ada batas bukti untuk target ini, sehingga tidak ada zona merah.</p>'}
     </section>
     ${draf.dx === 'aclr' ? `<section class="kartu besar"><h3>Tumpuan · Instruksi Operator</h3>${barisAturan({ teks: 'ACL-R tanpa cedera penyerta: ROM dini, tumpuan tanpa batasan, dan isometrik quadriceps sejak awal pascaoperasi. Instruksi operator selalu didahulukan.', label: 'BUKTI', sumber: ['aspetar2023'] })}</section>` : ''}
     ${adaMerah ? `<label class="centang"><input type="checkbox" id="akui" ${draf.akuiMerah ? 'checked' : ''}><span><span class="nama">Saya Sudah Menilai Gerbang Merah di Atas</span><br><span class="sub">Program tetap dibuat; status merah tercatat di kasus.</span></span></label>` : ''}

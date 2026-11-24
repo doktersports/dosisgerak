@@ -1,10 +1,12 @@
 // Penyimpanan lokal. Semua data hanya ada di HP ini.
-import { PENGATURAN_AWAL, VERSI } from './data.js';
+import { PENGATURAN_AWAL, PENGATURAN_LAMA, VERSI } from './data.js';
+
+const VERSI_DATA = 2;
 
 const KUNCI = 'dosisgerak-v1';
 
 function kosong() {
-  return { versiData: 1, kasus: [], pengaturan: { ...PENGATURAN_AWAL }, cadanganTerakhir: null };
+  return { versiData: VERSI_DATA, kasus: [], pengaturan: { ...PENGATURAN_AWAL }, cadanganTerakhir: null };
 }
 
 export function muat() {
@@ -12,12 +14,27 @@ export function muat() {
     const raw = localStorage.getItem(KUNCI);
     if (!raw) return kosong();
     const d = JSON.parse(raw);
-    d.pengaturan = { ...PENGATURAN_AWAL, ...(d.pengaturan || {}) };
-    d.kasus = Array.isArray(d.kasus) ? d.kasus : [];
-    return d;
+    return migrasi(d);
   } catch (e) {
     return kosong();
   }
+}
+
+// Angka yang masih sama persis dengan bawaan lama diganti bawaan baru.
+// Angka yang sudah diubah dokter dibiarkan.
+export function migrasi(d) {
+  const p = { ...(d.pengaturan || {}) };
+  const dari = Number(d.versiData) || 1;
+  for (let v = dari; v < VERSI_DATA; v++) {
+    const lama = PENGATURAN_LAMA[v] || {};
+    for (const [k, nilaiLama] of Object.entries(lama)) {
+      if (p[k] === undefined || p[k] === nilaiLama) p[k] = PENGATURAN_AWAL[k];
+    }
+  }
+  d.pengaturan = { ...PENGATURAN_AWAL, ...p };
+  d.kasus = Array.isArray(d.kasus) ? d.kasus : [];
+  d.versiData = VERSI_DATA;
+  return d;
 }
 
 export function simpan(d) {
@@ -65,5 +82,5 @@ export function bacaBerkasImpor(teks) {
   if (!isi || isi.aplikasi !== 'DosisGerak' || !isi.data || !Array.isArray(isi.data.kasus)) {
     throw new Error('Berkas ini bukan cadangan DosisGerak.');
   }
-  return isi.data;
+  return migrasi(isi.data);
 }
